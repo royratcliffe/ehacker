@@ -6,13 +6,16 @@
 
 %% @doc Dimensions of matrix.
 
--spec dimensions(T::t()) -> {M::non_neg_integer(), N::non_neg_integer()}.
+-spec dimensions(T :: t()) -> {M :: non_neg_integer(), N :: non_neg_integer()}.
+dimensions([]) ->
+    {0, 0};
+dimensions([H | T]) ->
+    dimensions(T, length(H), 1).
 
-dimensions([]) -> {0, 0};
-dimensions([H|T]) -> dimensions(T, length(H), 1).
-
-dimensions([], M, N) -> {M, N};
-dimensions([H|T], M, N) when length(H) == M -> dimensions(T, M, N + 1).
+dimensions([], M, N) ->
+    {M, N};
+dimensions([H | T], M, N) when length(H) == M ->
+    dimensions(T, M, N + 1).
 
 %% @doc Transposes matrix.
 %%
@@ -20,10 +23,11 @@ dimensions([H|T], M, N) when length(H) == M -> dimensions(T, M, N + 1).
 %% [] and this cannot appear as a guard condition because lists:all/2 cannot
 %% execute within a guard.
 
--spec transpose(T::t()) -> t().
-
+-spec transpose(T :: t()) -> t().
 transpose(T) ->
-    case lists:all(fun (X) -> X == [] end, T) of
-        true -> [];
-        false -> [lists:map(fun erlang:hd/1, T)|transpose(lists:map(fun erlang:tl/1, T))]
+    case lists:all(fun(X) -> X == [] end, T) of
+        true ->
+            [];
+        false ->
+            [lists:map(fun erlang:hd/1, T) | transpose(lists:map(fun erlang:tl/1, T))]
     end.
